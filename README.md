@@ -99,39 +99,39 @@ Key architectural components:
 
 ---
 
-## Building LokNet
+## 🛠️ How to Run (from GitHub)
 
-### Prerequisites
-- Node.js v18+
-- npm
+If you have downloaded this project from GitHub, follow these steps to get it running on your local machine.
 
-### Install Dependencies
+### 1. Prerequisites (Required Software)
+You need to have these installed on your computer:
+*   **Node.js** (Version 18 or higher): [Download Here](https://nodejs.org/)
+*   **Git**: [Download Here](https://git-scm.com/)
+
+### 2. Setup
+Open your terminal (Command Prompt, PowerShell, or VS Code Terminal) and run:
+
 ```bash
+# 1. Clone the repository (download the code)
+git clone https://github.com/YOUR_USERNAME/LokNet.git
+cd LokNet
+
+# 2. Install dependencies (libraries needed to run)
 npm install
 ```
 
-### Run in Development Mode
+### 3. Run the App
+To start the browser in development mode:
 ```bash
 npm run dev
 ```
 
-### Build for Distribution
+### 4. Create an Installer (Optional)
+To build a standalone `.exe` installer for Windows:
 ```bash
 npm run build
 ```
-
-LokNet can be built and run entirely locally without requiring online services after installation.
-
----
-
-## Project Status
-
-**LokNet v0.1** is a foundation release.
-
-It focuses on:
-- Establishing a clean, trustworthy browser base
-- Ensuring architectural clarity
-- Making future forks and extensions possible
+The installer will be generated in the `dist` or `release` folder.
 
 ---
 
