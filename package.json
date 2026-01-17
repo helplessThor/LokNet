@@ -1,0 +1,41 @@
+{
+  "name": "loknet",
+  "productName": "LokNet",
+  "version": "1.0.0",
+  "description": "A people-first, open, resilient web browser.",
+  "main": "dist-electron/main.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "start": "electron ."
+  },
+  "keywords": [
+    "browser",
+    "electron",
+    "privacy",
+    "sovereignty"
+  ],
+  "author": "LokNet Community",
+  "license": "MIT",
+  "dependencies": {
+    "lucide-react": "^0.300.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.23",
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.1",
+    "tree-kill": "^1.2.2",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.8",
+    "vite-plugin-electron": "^0.15.4",
+    "vite-plugin-electron-renderer": "^0.14.5"
+  }
+}

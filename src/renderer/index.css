@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Main window usually doesn't scroll, the webview does */
+  background-color: #1a1b1e;
+  font-family: 'Inter', system-ui, sans-serif;
+}
