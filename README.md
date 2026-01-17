@@ -67,17 +67,43 @@ It is built for **longevity**.
 
 ---
 
-## Core Features (v0.1)
+## Core Features (v0.2)
+ 
+-   **Core Engine**: Chromium rendering via Electron for modern web compatibility.
+-   **Smart Tabs**: Dynamic titles and favicons that update in real-time.
+-   **Bookmarks Manager**:
+    -   Save, list, visit, and delete bookmarks.
+    -   Dedicated management UI.
+    -   Visual feedback (toast notifications) for actions.
+-   **Privacy By Default**:
+    -   No telemetry or analytics.
+    -   Google Safe Browsing disabled.
+    -   Internal pages (like Welcome Page) are protected from being bookmarked.
+-   **Resilience**:
+    -   Local JSON-based storage for history and bookmarks.
+    -   Offline-installable architecture.
+-   **User Interface**:
+    -   Clean, distraction-free "Calm" UI.
+    -   Native-feeling tab management.
+    -   Dark-themed design (Slate/Tailwind).
 
-- Chromium rendering engine (via Electron)
-- Tabbed browsing with memory-conscious tab management
-- Built-in tracker blocking (lightweight, transparent)
-- Google Safe Browsing disabled by default
-- No telemetry or analytics
-- DuckDuckGo as the default search (replaceable)
-- Built-in PDF viewer
-- Reader-friendly, distraction-free UI
-- Local JSON-based storage for history and bookmarks
+---
+
+## Changelog
+
+### v0.2.0 (Current)
+-   **New**: Added full Bookmarks Manager with UI for listing and deleting items.
+-   **New**: Implemented Toast Notification system for non-intrusive user feedback.
+-   **New**: Added dynamic Tab Titles and Favicons (tabs now reflect the actual website).
+-   **Improved**: Fixed "Double Tab" startup bug; browser now opens cleanly with one Welcome Page.
+-   **Improved**: Sync address bar with navigation updates (URL/Title).
+-   **Improved**: Prevented web content from overlapping UI elements (adjusted layout bounds).
+-   **Fixed**: Added missing favicon to the Welcome Page.
+
+### v0.1.0
+-   Initial release.
+-   Basic browser functionality (Tabs, Navigation, History backend).
+-   Welcome Page.
 
 ---
 

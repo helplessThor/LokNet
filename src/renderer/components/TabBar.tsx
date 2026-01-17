@@ -5,6 +5,7 @@ export interface Tab {
     id: number;
     title: string;
     active: boolean;
+    icon?: string;
 }
 
 interface TabBarProps {
@@ -27,6 +28,7 @@ export function TabBar({ tabs, activeTabId, onSwitch, onClose, onNew }: TabBarPr
             ${activeTabId === tab.id ? 'bg-slate-800 text-white' : 'bg-transparent text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}
           `}
                 >
+                    {tab.icon && <img src={tab.icon} className="w-4 h-4 mr-2" alt="" />}
                     <span className="flex-1 truncate mr-2">{tab.title || 'New Tab'}</span>
                     <button
                         onClick={(e) => { e.stopPropagation(); onClose(tab.id); }}

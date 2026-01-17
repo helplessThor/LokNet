@@ -1,18 +1,32 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ArrowRight, RotateCw, ShieldCheck, Star } from 'lucide-react';
+import { ArrowLeft, ArrowRight, RotateCw, ShieldCheck, Star, List } from 'lucide-react';
 
 interface TopBarProps {
+    url: string;
     onNavigate: (url: string) => void;
     onBack: () => void;
     onForward: () => void;
     onReload: () => void;
+    onBookmark: (success: boolean, error?: string) => void;
+    onOpenBookmarks: () => void;
 }
 
-export function TopBar({ onNavigate, onBack, onForward, onReload }: TopBarProps) {
-    const [url, setUrl] = useState('');
+export function TopBar({ url: externalUrl, onNavigate, onBack, onForward, onReload, onBookmark, onOpenBookmarks }: TopBarProps) {
+    const [url, setUrl] = useState(externalUrl);
 
-    const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Sync input with actual page URL when it changes externally
+    React.useEffect(() => {
+        // Mask the internal welcome page URL
+        if (externalUrl && (externalUrl.includes('/welcome.html') || externalUrl.includes('localhost'))) {
+            setUrl('');
+        } else {
+            setUrl(externalUrl);
+        }
+    }, [externalUrl]);
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
+            (e.target as HTMLInputElement).blur(); // Remove focus
             let finalUrl = url;
             if (!url.startsWith('http') && !url.includes('://')) {
                 if (url.includes('.') && !url.includes(' ')) {
@@ -45,21 +59,27 @@ export function TopBar({ onNavigate, onBack, onForward, onReload }: TopBarProps)
                 />
             </div>
 
-            <button
-                className="p-2 hover:bg-slate-700 rounded-full transition text-slate-400 active:text-yellow-400"
-                title="Bookmark this page"
-                onClick={() => {
-                    // Naive implementation: save current URL. 
-                    // In a real app we'd get the actual current URL from the ViewManager via IPC if it differs from input.
-                    // But 'url' state in TopBar is just the input text. 
-                    // We should ideally pass the current confirmed URL from parent.
-                    // For MVP, we'll just alert "Bookmark Saved" to demonstrate intent.
-                    // But better: use a window.api call.
-                    if (url) window.api.addBookmark(url, 'Bookmark');
-                }}
-            >
-                <Star size={16} />
-            </button>
+            <div className="flex items-center space-x-1">
+                <button
+                    className="p-2 hover:bg-slate-700 rounded-full transition text-slate-400 active:text-yellow-400"
+                    title="Bookmark this page"
+                    onClick={() => {
+                        // Call Main process to bookmark current tab
+                        window.api.createBookmark().then((result: { success: boolean, error?: string }) => {
+                            onBookmark(result.success, result.error);
+                        });
+                    }}
+                >
+                    <Star size={16} />
+                </button>
+                <button
+                    className="p-2 hover:bg-slate-700 rounded-full transition text-slate-400 hover:text-white"
+                    title="Open Bookmarks"
+                    onClick={onOpenBookmarks}
+                >
+                    <List size={16} />
+                </button>
+            </div>
         </div>
     );
 }

@@ -7,7 +7,7 @@ export class ViewManager {
     private views: Map<number, BrowserView> = new Map();
     private activeViewId: number | null = null;
     private nextId = 1;
-    private bounds = { x: 0, y: 80, width: 800, height: 600 };
+    private bounds = { x: 0, y: 90, width: 800, height: 600 };
     private store: Store;
 
     constructor(window: BrowserWindow) {
@@ -17,14 +17,7 @@ export class ViewManager {
 
         // Initial resize to match window
         const winBounds = this.window.getBounds();
-        this.updateBounds({ width: winBounds.width, height: winBounds.height - 80 });
-
-        // Load Welcome Page
-        const welcomePath = process.env.VITE_DEV_SERVER_URL
-            ? 'http://localhost:5173/welcome.html' // Served by Vite in dev (public dir)
-            : `file://${path.join(process.env.VITE_PUBLIC || '', 'welcome.html')}`; // In prod
-
-        this.createView(welcomePath);
+        this.updateBounds({ width: winBounds.width, height: winBounds.height - 90 });
     }
 
     private setupIPC() {
@@ -32,18 +25,60 @@ export class ViewManager {
         ipcMain.handle('tab:switch', (_, id) => this.switchTo(id));
         ipcMain.handle('tab:close', (_, id) => this.closeView(id));
 
+        // Bookmarks (Handled here to access active view data)
+        ipcMain.handle('bookmarks:create', () => {
+            if (!this.activeView) return { success: false, error: "No active tab" };
+
+            const url = this.activeView.webContents.getURL();
+            let title = this.activeView.webContents.getTitle() || url; // Fallback title
+
+            if (!url) return { success: false, error: "No URL found" };
+
+            // Block internal pages
+            if (url.includes('welcome.html') || url.startsWith('file://')) {
+                return { success: false, error: "Cannot bookmark internal page" };
+            }
+
+            this.store.addBookmark(url, title);
+            return { success: true };
+        });
+
+        ipcMain.handle('bookmarks:get', () => {
+            return this.store.getBookmarks();
+        });
+
+        ipcMain.handle('bookmarks:remove', (_, url) => {
+            return this.store.removeBookmark(url);
+        });
+
         // Browser controls
         ipcMain.on('nav:back', () => this.activeView?.webContents.goBack());
         ipcMain.on('nav:forward', () => this.activeView?.webContents.goForward());
         ipcMain.on('nav:reload', () => this.activeView?.webContents.reload());
         ipcMain.on('nav:load', (_, url) => this.activeView?.webContents.loadURL(url));
+
+        // Visibility controls for UI overlays
+        ipcMain.on('view:hide', () => {
+            if (this.activeView) this.window.removeBrowserView(this.activeView);
+        });
+        ipcMain.on('view:show', () => {
+            if (this.activeView) this.window.addBrowserView(this.activeView);
+        });
     }
 
     get activeView() {
         return this.activeViewId ? this.views.get(this.activeViewId) : null;
     }
 
-    createView(url: string = 'about:blank') {
+    private get defaultUrl() {
+        return process.env.VITE_DEV_SERVER_URL
+            ? 'http://localhost:5173/welcome.html'
+            : `file://${path.join(process.env.VITE_PUBLIC || '', 'welcome.html')}`;
+    }
+
+    createView(url?: string) {
+        const targetUrl = url || this.defaultUrl;
+
         const view = new BrowserView({
             webPreferences: {
                 nodeIntegration: false,
@@ -54,15 +89,37 @@ export class ViewManager {
             }
         });
 
-        // Record History
-        view.webContents.on('did-navigate', (_, url) => {
-            this.store.addHistory(url, view.webContents.getTitle());
-        });
-        view.webContents.on('did-navigate-in-page', (_, url) => {
-            this.store.addHistory(url, view.webContents.getTitle());
-        });
+        // Record History & Notify Renderer
+        // Record History & Notify Renderer
+        const updateUrl = (url: string) => {
+            const title = view.webContents.getTitle();
+            this.store.addHistory(url, title);
 
-        view.webContents.loadURL(url);
+            // Notify renderer to update specific tab title/url
+            this.window.webContents.send('tab:update', { id, title, url });
+
+            if (this.activeViewId === id) {
+                this.window.webContents.send('nav:update', { url, title });
+            }
+        };
+
+        const updateFavicon = (favicons: string[]) => {
+            if (favicons && favicons.length > 0) {
+                this.window.webContents.send('tab:update', { id, icon: favicons[0] });
+            }
+        };
+
+        view.webContents.on('did-navigate', (_, url) => updateUrl(url));
+        view.webContents.on('did-navigate-in-page', (_, url) => updateUrl(url));
+        view.webContents.on('page-title-updated', (_, title) => {
+            this.window.webContents.send('tab:update', { id, title });
+            if (this.activeViewId === id) {
+                this.window.webContents.send('nav:update', { url: view.webContents.getURL(), title });
+            }
+        });
+        view.webContents.on('page-favicon-updated', (_, favicons) => updateFavicon(favicons));
+
+        view.webContents.loadURL(targetUrl);
 
         const id = this.nextId++;
         this.views.set(id, view);
@@ -81,8 +138,11 @@ export class ViewManager {
 
         this.activeViewId = id;
         this.window.addBrowserView(view);
-        view.setBounds({ x: 0, y: 80, width: this.bounds.width, height: this.bounds.height });
+        view.setBounds({ x: 0, y: 90, width: this.bounds.width, height: this.bounds.height });
         view.setAutoResize({ width: true, height: true });
+
+        // Notify renderer of current URL on switch
+        this.window.webContents.send('nav:update', { url: view.webContents.getURL(), title: view.webContents.getTitle() });
     }
 
     closeView(id: number) {
@@ -109,7 +169,7 @@ export class ViewManager {
     updateBounds(newBounds: { width: number, height: number }) {
         this.bounds = { ...this.bounds, ...newBounds };
         if (this.activeView) {
-            this.activeView.setBounds({ x: 0, y: 80, width: this.bounds.width, height: this.bounds.height });
+            this.activeView.setBounds({ x: 0, y: 90, width: this.bounds.width, height: this.bounds.height });
         }
     }
 }

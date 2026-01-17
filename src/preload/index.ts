@@ -11,11 +11,17 @@ contextBridge.exposeInMainWorld('api', {
     goForward: () => ipcRenderer.send('nav:forward'),
     reload: () => ipcRenderer.send('nav:reload'),
     loadURL: (url: string) => ipcRenderer.send('nav:load', url),
+    hideView: () => ipcRenderer.send('view:hide'),
+    showView: () => ipcRenderer.send('view:show'),
 
     // Bookmarks
-    addBookmark: (url: string, title: string) => ipcRenderer.invoke('bookmarks:add', { url, title }),
+    createBookmark: () => ipcRenderer.invoke('bookmarks:create'),
+    getBookmarks: () => ipcRenderer.invoke('bookmarks:get'),
+    removeBookmark: (url: string) => ipcRenderer.invoke('bookmarks:remove', url),
 
     // Listeners
     onTabsUpdate: (callback: (tabs: any[]) => void) => ipcRenderer.on('tabs:update', (_, tabs) => callback(tabs)),
+    onTabUpdate: (callback: (data: { id: number, title?: string, url?: string, icon?: string }) => void) => ipcRenderer.on('tab:update', (_, data) => callback(data)),
     onActiveTabUpdate: (callback: (id: number) => void) => ipcRenderer.on('tabs:active', (_, id) => callback(id)),
+    onNavUpdate: (callback: (data: { url: string, title: string }) => void) => ipcRenderer.on('nav:update', (_, data) => callback(data)),
 });

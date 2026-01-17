@@ -24,7 +24,6 @@ export class Store {
 
     constructor() {
         this.load();
-        this.setupIPC();
     }
 
     private load() {
@@ -45,26 +44,24 @@ export class Store {
         }
     }
 
-    private setupIPC() {
-        ipcMain.handle('bookmarks:add', (_, { url, title }) => {
-            this.data.bookmarks[url] = title;
-            this.save();
-            return this.data.bookmarks;
-        });
+    addBookmark(url: string, title: string) {
+        this.data.bookmarks[url] = title;
+        this.save();
+        return this.data.bookmarks;
+    }
 
-        ipcMain.handle('bookmarks:remove', (_, url) => {
-            delete this.data.bookmarks[url];
-            this.save();
-            return this.data.bookmarks;
-        });
+    removeBookmark(url: string) {
+        delete this.data.bookmarks[url];
+        this.save();
+        return this.data.bookmarks;
+    }
 
-        ipcMain.handle('bookmarks:get', () => {
-            return this.data.bookmarks;
-        });
+    getBookmarks() {
+        return this.data.bookmarks;
+    }
 
-        ipcMain.handle('history:get', () => {
-            return this.data.history.slice(0, 100); // Return last 100
-        });
+    getHistory() {
+        return this.data.history.slice(0, 100);
     }
 
     addHistory(url: string, title: string) {
