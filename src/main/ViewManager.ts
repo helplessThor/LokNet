@@ -89,6 +89,9 @@ export class ViewManager {
             }
         });
 
+        // Set User Agent to bypass "Old Chrome" detection (WhatsApp Web fix)
+        view.webContents.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+
         // Record History & Notify Renderer
         // Record History & Notify Renderer
         const updateUrl = (url: string) => {

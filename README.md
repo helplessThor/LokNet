@@ -91,7 +91,11 @@ It is built for **longevity**.
 
 ## Changelog
 
-### v0.2.0 (Current)
+### v0.2.1 (Current)
+-   **Fixed**: WhatsApp Web compatibility (Updated User-Agent to mimic modern Chrome).
+-   **Refined**: Improved site compatibility for other modern web apps triggering "update browser" warnings.
+
+### v0.2.0
 -   **New**: Added full Bookmarks Manager with UI for listing and deleting items.
 -   **New**: Implemented Toast Notification system for non-intrusive user feedback.
 -   **New**: Added dynamic Tab Titles and Favicons (tabs now reflect the actual website).
