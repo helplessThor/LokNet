@@ -69,7 +69,6 @@ typings/
 
 # gatsby files
 .cache/
-public
 # Commenting out public because we have assets there we WANT to commit (welcome.html, icons)
 # public
 
