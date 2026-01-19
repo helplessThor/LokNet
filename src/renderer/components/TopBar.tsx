@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ArrowRight, RotateCw, ShieldCheck, Star, List } from 'lucide-react';
+import { ArrowLeft, ArrowRight, RotateCw, ShieldCheck, Star, List, Clock, Lock } from 'lucide-react';
 
 interface TopBarProps {
     url: string;
@@ -9,9 +9,11 @@ interface TopBarProps {
     onReload: () => void;
     onBookmark: (success: boolean, error?: string) => void;
     onOpenBookmarks: () => void;
+    onOpenHistory: () => void;
+    onOpenSiteInfo: () => void;
 }
 
-export function TopBar({ url: externalUrl, onNavigate, onBack, onForward, onReload, onBookmark, onOpenBookmarks }: TopBarProps) {
+export function TopBar({ url: externalUrl, onNavigate, onBack, onForward, onReload, onBookmark, onOpenBookmarks, onOpenHistory, onOpenSiteInfo }: TopBarProps) {
     const [url, setUrl] = useState(externalUrl);
 
     // Sync input with actual page URL when it changes externally
@@ -49,13 +51,20 @@ export function TopBar({ url: externalUrl, onNavigate, onBack, onForward, onRelo
             </div>
 
             <div className="flex-1 flex items-center bg-slate-900 rounded-full px-4 h-8 border border-slate-700 focus-within:border-cyan-500 transition">
-                <ShieldCheck size={14} className="text-emerald-500 mr-2" />
+                <button
+                    onClick={onOpenSiteInfo}
+                    className="mr-2 text-emerald-500 hover:text-emerald-400 transition"
+                    title="View Site Information"
+                >
+                    <Lock size={14} />
+                </button>
                 <input
                     className="flex-1 bg-transparent border-none outline-none text-sm text-white placeholder-slate-500"
                     placeholder="Search or enter address"
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                     onKeyDown={handleKeyDown}
+                    onFocus={(e) => e.target.select()}
                 />
             </div>
 
@@ -78,6 +87,14 @@ export function TopBar({ url: externalUrl, onNavigate, onBack, onForward, onRelo
                     onClick={onOpenBookmarks}
                 >
                     <List size={16} />
+                </button>
+                <div className="w-[1px] h-4 bg-slate-700 mx-1"></div>
+                <button
+                    className="p-2 hover:bg-slate-700 rounded-full transition text-slate-400 hover:text-white"
+                    title="History"
+                    onClick={onOpenHistory}
+                >
+                    <Clock size={16} />
                 </button>
             </div>
         </div>

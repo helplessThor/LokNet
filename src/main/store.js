@@ -1,82 +1,53 @@
-import { app, ipcMain } from 'electron';
+import { app } from 'electron';
 import fs from 'node:fs';
 import path from 'node:path';
-
 const DATA_PATH = path.join(app.getPath('userData'), 'loknet-data.json');
-
-interface Bookmarks {
-    [url: string]: string; // url -> title
-}
-
-interface HistoryItem {
-    url: string;
-    title: string;
-    timestamp: number;
-}
-
-interface Permissions {
-    [host: string]: {
-        [permission: string]: 'allow' | 'deny';
-    };
-}
-
-interface Data {
-    bookmarks: Bookmarks;
-    history: HistoryItem[];
-    permissions: Permissions;
-}
-
 export class Store {
-    private data: Data = { bookmarks: {}, history: [], permissions: {} };
-
     constructor() {
+        this.data = { bookmarks: {}, history: [], permissions: {} };
         this.load();
     }
-
-    private load() {
+    load() {
         try {
             if (fs.existsSync(DATA_PATH)) {
                 this.data = JSON.parse(fs.readFileSync(DATA_PATH, 'utf-8'));
             }
-        } catch (e) {
+        }
+        catch (e) {
             console.error('Failed to load data', e);
         }
     }
-
-    private save() {
+    save() {
         try {
             fs.writeFileSync(DATA_PATH, JSON.stringify(this.data, null, 2));
-        } catch (e) {
+        }
+        catch (e) {
             console.error('Failed to save data', e);
         }
     }
-
-    addBookmark(url: string, title: string) {
+    addBookmark(url, title) {
         this.data.bookmarks[url] = title;
         this.save();
         return this.data.bookmarks;
     }
-
-    removeBookmark(url: string) {
+    removeBookmark(url) {
         delete this.data.bookmarks[url];
         this.save();
         return this.data.bookmarks;
     }
-
     getBookmarks() {
         return this.data.bookmarks;
     }
-
     getHistory() {
         return this.data.history.slice(0, 100);
     }
-
-    addHistory(url: string, title: string) {
+    addHistory(url, title) {
         // Basic deduplication: if last entry is same, update timestamp
         const last = this.data.history[0];
         if (last && last.url === url) {
             last.timestamp = Date.now();
-        } else {
+        }
+        else {
             this.data.history.unshift({ url, title, timestamp: Date.now() });
             if (this.data.history.length > 1000) {
                 this.data.history = this.data.history.slice(0, 1000);
@@ -84,8 +55,7 @@ export class Store {
         }
         this.save();
     }
-
-    removeHistoryItem(url: string, timestamp: number) {
+    removeHistoryItem(url, timestamp) {
         // Remove specific instance based on timestamp or all instances of url if timestamp not provided?
         // For simplicity, let's remove by unique timestamp if possible, or filtered 
         // But the UI will probably just pass back what it got.
@@ -94,31 +64,27 @@ export class Store {
         this.save();
         return this.getHistory();
     }
-
     clearHistory() {
         this.data.history = [];
         this.save();
     }
-
-    getPermission(host: string, permission: string) {
-        if (!this.data.permissions) this.data.permissions = {};
+    getPermission(host, permission) {
+        if (!this.data.permissions)
+            this.data.permissions = {};
         return this.data.permissions[host]?.[permission] || null;
     }
-
-    setPermission(host: string, permission: string, status: 'allow' | 'deny') {
-        if (!this.data.permissions) this.data.permissions = {};
-        if (!this.data.permissions[host]) this.data.permissions[host] = {};
+    setPermission(host, permission, status) {
+        if (!this.data.permissions)
+            this.data.permissions = {};
+        if (!this.data.permissions[host])
+            this.data.permissions[host] = {};
         this.data.permissions[host][permission] = status;
         this.save();
     }
-
-
-
-    getPermissionsForHost(host: string) {
+    getPermissionsForHost(host) {
         return this.data.permissions?.[host] || {};
     }
-
-    removePermissionsForHost(host: string) {
+    removePermissionsForHost(host) {
         if (this.data.permissions?.[host]) {
             delete this.data.permissions[host];
             this.save();

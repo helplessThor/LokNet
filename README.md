@@ -67,20 +67,29 @@ It is built for **longevity**.
 
 ---
 
-## Core Features (v0.2)
+## Core Features (v0.3)
  
 -   **Core Engine**: Chromium rendering via Electron for modern web compatibility.
 -   **Smart Tabs**: Dynamic titles and favicons that update in real-time.
+-   **History Manager**:
+    -   Complete browsing history tracking.
+    -   Dedicated UI ("Clock" icon) to view, search (coming soon), and delete hostory items.
+    -   "Clear All" history functionality.
 -   **Bookmarks Manager**:
     -   Save, list, visit, and delete bookmarks.
     -   Dedicated management UI.
     -   Visual feedback (toast notifications) for actions.
+-   **Granular Privacy & Permissions**:
+    -   **Site Info Panel**: Click the "Lock" icon 🔒 to view connection security and active permissions for the current site.
+    -   **Granular Media Control**: Separate management for Camera and Microphone permissions.
+    -   **Transient Permissions**: Support for "Allow this time" permissions that auto-expire when you close the app.
+    -   **Permission Reset**: One-click reset for site permissions that automatically reloads the page to enforce privacy.
 -   **Privacy By Default**:
     -   No telemetry or analytics.
     -   Google Safe Browsing disabled.
     -   Internal pages (like Welcome Page) are protected from being bookmarked.
 -   **Resilience**:
-    -   Local JSON-based storage for history and bookmarks.
+    -   Local JSON-based storage for history, bookmarks, and permissions.
     -   Offline-installable architecture.
 -   **User Interface**:
     -   Clean, distraction-free "Calm" UI.
@@ -91,7 +100,15 @@ It is built for **longevity**.
 
 ## Changelog
 
-### v0.2.1 (Current)
+### v0.3.0 (New Release)
+-   **New**: **History Management**. added a full history system with a UI to view recent sites, delete individual entries, or clear all history.
+-   **New**: **Site Info Panel**. Added a "Lock" icon next to the address bar. Shows SSL status and allows managing permissions for the current site.
+-   **New**: **Granular Media Permissions**. Broken down generic "media" requests into separate "Camera" and "Microphone" permissions.
+-   **New**: **Transient Permissions**. Added "Allow this time" option for permissions, which remembers the choice only until the app is closed.
+-   **Improved**: **Permission Revocation**. Clicking "Reset Permissions" now automatically reloads the page to ensure immediate privacy (e.g., cutting off camera streams).
+-   **Improved**: **Terminal Hygiene**. Suppressed verbose Chromium logs for a cleaner developer experience.
+
+### v0.2.1
 -   **Fixed**: WhatsApp Web compatibility (Updated User-Agent to mimic modern Chrome).
 -   **Refined**: Improved site compatibility for other modern web apps triggering "update browser" warnings.
 

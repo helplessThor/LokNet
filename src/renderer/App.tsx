@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { TopBar } from './components/TopBar';
 import { TabBar, Tab } from './components/TabBar';
 import { BookmarksModal } from './components/BookmarksModal';
+import { HistoryModal } from './components/HistoryModal';
+import { PermissionModal } from './components/PermissionModal';
+import { SiteInfoModal } from './components/SiteInfoModal';
 
 // Define the API type for TypeScript (simplified)
 declare global {
@@ -15,6 +18,9 @@ function App() {
     const [activeTabId, setActiveTabId] = useState<number | null>(null);
     const [toast, setToast] = useState<{ msg: string, visible: boolean }>({ msg: '', visible: false });
     const [isBookmarksOpen, setIsBookmarksOpen] = useState(false);
+    const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+    const [isSiteInfoOpen, setIsSiteInfoOpen] = useState(false);
+    const [permissionRequest, setPermissionRequest] = useState<{ host: string, permission: string, id: number } | null>(null);
 
     // Toast helper
     const showToast = (msg: string) => {
@@ -44,6 +50,11 @@ function App() {
                 }
                 return tab;
             }));
+        });
+
+        window.api.onPermissionRequest((data: { host: string, permission: string, id: number }) => {
+            setPermissionRequest(data);
+            window.api.hideView();
         });
     }, []);
 
@@ -99,7 +110,14 @@ function App() {
                     }}
                     onOpenBookmarks={() => {
                         setIsBookmarksOpen(true);
-                        // Hide the browser view so modal is visible
+                        window.api.hideView();
+                    }}
+                    onOpenHistory={() => {
+                        setIsHistoryOpen(true);
+                        window.api.hideView();
+                    }}
+                    onOpenSiteInfo={() => {
+                        setIsSiteInfoOpen(true);
                         window.api.hideView();
                     }}
                 />
@@ -118,6 +136,47 @@ function App() {
                     // Ensure view is shown if we navigate from modal
                     window.api.showView();
                 }}
+            />
+
+            {/* History Modal */}
+            <HistoryModal
+                isOpen={isHistoryOpen}
+                onClose={() => {
+                    setIsHistoryOpen(false);
+                    window.api.showView();
+                }}
+                onNavigate={(url) => {
+                    window.api.loadURL(url);
+                    window.api.showView();
+                }}
+            />
+
+            {/* Permission Prompt */}
+            <PermissionModal
+                request={permissionRequest}
+                onResponse={(allow, persist) => {
+                    if (permissionRequest) {
+                        window.api.sendPermissionResponse({
+                            id: permissionRequest.id,
+                            permission: permissionRequest.permission,
+                            host: permissionRequest.host,
+                            allow,
+                            persist
+                        });
+                        setPermissionRequest(null);
+                        window.api.showView();
+                    }
+                }}
+            />
+
+            {/* Site Info Modal */}
+            <SiteInfoModal
+                isOpen={isSiteInfoOpen}
+                onClose={() => {
+                    setIsSiteInfoOpen(false);
+                    window.api.showView();
+                }}
+                host={currentUrl ? new URL(currentUrl).host : ''}
             />
 
             {/* Toast Notification */}

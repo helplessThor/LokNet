@@ -1,19 +1,15 @@
 import { app, BrowserWindow, session } from 'electron';
 import path from 'node:path';
-
 app.commandLine.appendSwitch('disable-client-side-phishing-detection');
 app.commandLine.appendSwitch('no-service-autorun');
 // Suppress Verbose/Info logs from Chromium to clean terminal
 app.commandLine.appendSwitch('log-level', '3'); // 0=info, 1=warning, 2=error, 3=fatal
 // Removed disable-speech-api and disable-features to allow Google Meet media access
-
 process.env.DIST = path.join(__dirname, '../dist');
 process.env.VITE_PUBLIC = app.isPackaged ? process.env.DIST : path.join(process.env.DIST, '../public');
-
-let win: BrowserWindow | null;
+let win;
 // We will store our "Tabs" (WebContentsViews) here later.
 import { ViewManager } from './ViewManager';
-
 function createWindow() {
     win = new BrowserWindow({
         width: 1200,
@@ -32,9 +28,7 @@ function createWindow() {
         minWidth: 800,
         minHeight: 600,
     });
-
     const viewManager = new ViewManager(win);
-
     // Handle Resize
     // Handle Resize
     const resize = () => {
@@ -43,49 +37,38 @@ function createWindow() {
             viewManager.updateBounds({ width, height: height - 90 });
         }
     };
-
     win.on('resize', resize);
     win.on('maximize', resize);
     win.on('unmaximize', resize);
     win.on('enter-full-screen', resize);
     win.on('leave-full-screen', resize);
-
     // Load the shell (renderer)
     if (process.env.VITE_DEV_SERVER_URL) {
         win.loadURL(process.env.VITE_DEV_SERVER_URL);
-    } else {
+    }
+    else {
         win.loadFile(path.join(process.env.DIST || '', 'index.html'));
     }
-
     // Configure Session for Privacy
     const ses = session.defaultSession;
-
     // Block known tracking/telemetry domains explicitly (Simple privacy shield)
-    ses.webRequest.onBeforeRequest(
-        { urls: ['*://*.google-analytics.com/*', '*://*.doubleclick.net/*'] },
-        (details, callback) => {
-            callback({ cancel: true });
-        }
-    );
-
+    ses.webRequest.onBeforeRequest({ urls: ['*://*.google-analytics.com/*', '*://*.doubleclick.net/*'] }, (details, callback) => {
+        callback({ cancel: true });
+    });
     // Disable cache if extremely privacy focused? No, caching is good for bandwidth. 
     // We keep cache but might clear on exit.
-
     win.on('closed', () => {
         win = null;
     });
 }
-
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
     }
 });
-
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
         createWindow();
     }
 });
-
 app.whenReady().then(createWindow);
