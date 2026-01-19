@@ -18,7 +18,10 @@ interface TabBarProps {
 
 export function TabBar({ tabs, activeTabId, onSwitch, onClose, onNew }: TabBarProps) {
     return (
-        <div className="h-10 bg-slate-900 flex items-end px-2 space-x-1 pt-2 w-full overflow-x-auto no-scrollbar">
+        <div
+            className="h-10 bg-slate-900 flex items-end px-2 space-x-1 pt-2 w-full overflow-x-auto no-scrollbar pr-[140px]"
+            style={{ WebkitAppRegion: 'drag' } as any}
+        >
             {tabs.map((tab) => (
                 <div
                     key={tab.id}
@@ -27,6 +30,7 @@ export function TabBar({ tabs, activeTabId, onSwitch, onClose, onNew }: TabBarPr
             group flex items-center min-w-[150px] max-w-[200px] h-8 px-3 rounded-t-md cursor-pointer select-none text-sm transition-colors
             ${activeTabId === tab.id ? 'bg-slate-800 text-white' : 'bg-transparent text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}
           `}
+                    style={{ WebkitAppRegion: 'no-drag' } as any}
                 >
                     {tab.icon && <img src={tab.icon} className="w-4 h-4 mr-2" alt="" />}
                     <span className="flex-1 truncate mr-2">{tab.title || 'New Tab'}</span>
@@ -41,6 +45,7 @@ export function TabBar({ tabs, activeTabId, onSwitch, onClose, onNew }: TabBarPr
             <button
                 onClick={onNew}
                 className="h-8 w-8 flex items-center justify-center text-slate-400 hover:bg-slate-800 rounded-md transition"
+                style={{ WebkitAppRegion: 'no-drag' } as any}
             >
                 <Plus size={18} />
             </button>

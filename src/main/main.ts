@@ -27,7 +27,13 @@ function createWindow() {
             contextIsolation: true,
             nodeIntegration: false,
         },
-        autoHideMenuBar: true,
+        // autoHideMenuBar: true, // Not needed with hidden title bar
+        titleBarStyle: 'hidden',
+        titleBarOverlay: {
+            color: '#0f172a', // Matches slate-900
+            symbolColor: '#94a3b8', // Matches slate-400
+            height: 40 // Height of the TabBar
+        },
         backgroundColor: '#1a1b1e', // Dark theme customized
         minWidth: 800,
         minHeight: 600,

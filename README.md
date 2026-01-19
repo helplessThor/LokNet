@@ -67,9 +67,13 @@ It is built for **longevity**.
 
 ---
 
-## Core Features (v0.3)
+## Core Features (v0.4)
  
 -   **Core Engine**: Chromium rendering via Electron for modern web compatibility.
+-   **Sleek Interface**: 
+    -   **Native Window Controls**: Integrated Minimize/Maximize/Close buttons directly into the Tab Bar.
+    -   **Frameless Design**: Modern, borderless window with support for Windows Snap Layouts.
+    -   **Distraction-Free**: Clean, "Calm" dark-themed UI (Slate/Tailwind).
 -   **Smart Tabs**: Dynamic titles and favicons that update in real-time.
 -   **History Manager**:
     -   Complete browsing history tracking.
@@ -85,22 +89,26 @@ It is built for **longevity**.
     -   **Transient Permissions**: Support for "Allow this time" permissions that auto-expire when you close the app.
     -   **Permission Reset**: One-click reset for site permissions that automatically reloads the page to enforce privacy.
 -   **Privacy By Default**:
+    -   **Privacy Shield**: Blocks known tracking and telemetry domains (Google Analytics, DoubleClick) by default.
     -   No telemetry or analytics.
     -   Google Safe Browsing disabled.
     -   Internal pages (like Welcome Page) are protected from being bookmarked.
 -   **Resilience**:
     -   Local JSON-based storage for history, bookmarks, and permissions.
     -   Offline-installable architecture.
--   **User Interface**:
-    -   Clean, distraction-free "Calm" UI.
-    -   Native-feeling tab management.
-    -   Dark-themed design (Slate/Tailwind).
 
 ---
 
 ## Changelog
 
-### v0.3.0 (New Release)
+### v0.4.0 (Latest Release)
+-   **New**: **Native Window Controls**. Integrated window controls (Minimize, Maximize, Close) directly into the Tab Bar for a modern, streamlined look.
+-   **New**: **Frameless Window**. Removed the default system title bar on Windows.
+-   **New**: **Privacy Shield**. Enhanced blocking of known tracking and telemetry domains (Google Analytics, DoubleClick).
+-   **Improved**: **Snap Layouts**. Added support for Windows 11 Snap Layouts via `titleBarOverlay`.
+-   **Improved**: **UI/UX**. Updated Tab Bar drag regions to allow window moving while keeping tabs interactive.
+
+### v0.3.0
 -   **New**: **History Management**. added a full history system with a UI to view recent sites, delete individual entries, or clear all history.
 -   **New**: **Site Info Panel**. Added a "Lock" icon next to the address bar. Shows SSL status and allows managing permissions for the current site.
 -   **New**: **Granular Media Permissions**. Broken down generic "media" requests into separate "Camera" and "Microphone" permissions.
