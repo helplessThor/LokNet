@@ -4,12 +4,17 @@ app.commandLine.appendSwitch('disable-client-side-phishing-detection');
 app.commandLine.appendSwitch('no-service-autorun');
 // Suppress Verbose/Info logs from Chromium to clean terminal
 app.commandLine.appendSwitch('log-level', '3'); // 0=info, 1=warning, 2=error, 3=fatal
+// Disable FLoC (Interest Cohort) to clean up console warnings
+app.commandLine.appendSwitch('disable-features', 'InterestCohort');
 // Removed disable-speech-api and disable-features to allow Google Meet media access
 process.env.DIST = path.join(__dirname, '../dist');
 process.env.VITE_PUBLIC = app.isPackaged ? process.env.DIST : path.join(process.env.DIST, '../public');
 let win;
 // We will store our "Tabs" (WebContentsViews) here later.
 import { ViewManager } from './ViewManager';
+import { Menu } from 'electron';
+// Disable default menu (This stops Ctrl+Shift+I from opening the Shell DevTools)
+Menu.setApplicationMenu(null);
 function createWindow() {
     win = new BrowserWindow({
         width: 1200,
@@ -23,7 +28,13 @@ function createWindow() {
             contextIsolation: true,
             nodeIntegration: false,
         },
-        autoHideMenuBar: true,
+        // autoHideMenuBar: true, // Not needed with hidden title bar
+        titleBarStyle: 'hidden',
+        titleBarOverlay: {
+            color: '#0f172a', // Matches slate-900
+            symbolColor: '#94a3b8', // Matches slate-400
+            height: 40 // Height of the TabBar
+        },
         backgroundColor: '#1a1b1e', // Dark theme customized
         minWidth: 800,
         minHeight: 600,

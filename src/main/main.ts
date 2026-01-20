@@ -5,6 +5,8 @@ app.commandLine.appendSwitch('disable-client-side-phishing-detection');
 app.commandLine.appendSwitch('no-service-autorun');
 // Suppress Verbose/Info logs from Chromium to clean terminal
 app.commandLine.appendSwitch('log-level', '3'); // 0=info, 1=warning, 2=error, 3=fatal
+// Disable FLoC (Interest Cohort) to clean up console warnings
+app.commandLine.appendSwitch('disable-features', 'InterestCohort');
 // Removed disable-speech-api and disable-features to allow Google Meet media access
 
 process.env.DIST = path.join(__dirname, '../dist');
@@ -13,6 +15,10 @@ process.env.VITE_PUBLIC = app.isPackaged ? process.env.DIST : path.join(process.
 let win: BrowserWindow | null;
 // We will store our "Tabs" (WebContentsViews) here later.
 import { ViewManager } from './ViewManager';
+import { Menu } from 'electron';
+
+// Disable default menu (This stops Ctrl+Shift+I from opening the Shell DevTools)
+Menu.setApplicationMenu(null);
 
 function createWindow() {
     win = new BrowserWindow({

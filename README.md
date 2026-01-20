@@ -67,46 +67,50 @@ It is built for **longevity**.
 
 ---
 
-## Core Features (v0.4)
+## Core Features (v0.5 Beta)
  
 -   **Core Engine**: Chromium rendering via Electron for modern web compatibility.
 -   **Sleek Interface**: 
-    -   **Native Window Controls**: Integrated Minimize/Maximize/Close buttons directly into the Tab Bar.
+    -   **Native Window Controls**: Integrated Minimize/Maximize/Close buttons.
     -   **Frameless Design**: Modern, borderless window with support for Windows Snap Layouts.
-    -   **Distraction-Free**: Clean, "Calm" dark-themed UI (Slate/Tailwind).
+    -   **Distraction-Free**: Clean, "Calm" dark-themed UI.
 -   **Smart Tabs**: Dynamic titles and favicons that update in real-time.
+-   **Developer Tools**: Integrated, docked inspector for web engineering and debugging.
 -   **History Manager**:
-    -   Complete browsing history tracking.
-    -   Dedicated UI ("Clock" icon) to view, search (coming soon), and delete hostory items.
+    -   Complete browsing history tracking with dedicated management UI.
     -   "Clear All" history functionality.
 -   **Bookmarks Manager**:
-    -   Save, list, visit, and delete bookmarks.
-    -   Dedicated management UI.
-    -   Visual feedback (toast notifications) for actions.
+    -   Save, list, visit, and delete bookmarks with toast notifications.
 -   **Granular Privacy & Permissions**:
-    -   **Site Info Panel**: Click the "Lock" icon 🔒 to view connection security and active permissions for the current site.
-    -   **Granular Media Control**: Separate management for Camera and Microphone permissions.
-    -   **Transient Permissions**: Support for "Allow this time" permissions that auto-expire when you close the app.
-    -   **Permission Reset**: One-click reset for site permissions that automatically reloads the page to enforce privacy.
+    -   **Site Info Panel**: "Lock" icon 🔒 to view connection security and permissions.
+    -   **Granular Media Control**: Separate Camera and Microphone management.
+    -   **Transient Permissions**: "Allow this time" permissions that auto-expire.
+    -   **Permission Reset**: One-click reset that reloads the page to enforce privacy.
 -   **Privacy By Default**:
-    -   **Privacy Shield**: Blocks known tracking and telemetry domains (Google Analytics, DoubleClick) by default.
-    -   No telemetry or analytics.
-    -   Google Safe Browsing disabled.
-    -   Internal pages (like Welcome Page) are protected from being bookmarked.
+    -   **Privacy Shield**: Blocks known tracking and telemetry domains (Google Analytics, DoubleClick).
+    -   **No Telemetry**: Zero data collection.
+    -   **Disabled FLoC**: "Interest Cohort" tracking is explicitly disabled.
 -   **Resilience**:
-    -   Local JSON-based storage for history, bookmarks, and permissions.
-    -   Offline-installable architecture.
+    -   **Standalone Installer**: Offline-capable setup file (`.exe`) for easy distribution.
+    -   Local JSON-based storage for transparency.
 
 ---
 
 ## Changelog
 
-### v0.4.0 (Latest Release)
+### v0.5.0 (Public Beta)
+-   **New**: **Standalone Installer**. Added `npm run dist` support to generate an optimized offline `.exe` installer.
+-   **Improved**: **DevTools Integration**. "Inspect Element" (`Ctrl+Shift+I`) now correctly targets the active website and opens in a docked panel, fixing previous detachment issues.
+-   **Improved**: **Privacy Hardening**. Disabled FLoC ("Interest Cohort") to suppress browser warnings and prevent cohort-based tracking.
+-   **Fixed**: Resolved shell vs. content inspection conflicts.
+-   **Fixed**: Build system configuration for `electron-builder`.
+
+### v0.4.0
 -   **New**: **Native Window Controls**. Integrated window controls (Minimize, Maximize, Close) directly into the Tab Bar for a modern, streamlined look.
 -   **New**: **Frameless Window**. Removed the default system title bar on Windows.
 -   **New**: **Privacy Shield**. Enhanced blocking of known tracking and telemetry domains (Google Analytics, DoubleClick).
 -   **Improved**: **Snap Layouts**. Added support for Windows 11 Snap Layouts via `titleBarOverlay`.
--   **Improved**: **UI/UX**. Updated Tab Bar drag regions to allow window moving while keeping tabs interactive.
+-   **Improved**: **UI/UX**. Updated Tab Bar drag regions.
 
 ### v0.3.0
 -   **New**: **History Management**. added a full history system with a UI to view recent sites, delete individual entries, or clear all history.

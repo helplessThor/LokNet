@@ -1,14 +1,38 @@
 {
   "name": "loknet",
   "productName": "LokNet",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "A people-first, open, resilient web browser.",
   "main": "dist-electron/main.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "start": "electron ."
+    "start": "electron .",
+    "dist": "npm run build && electron-builder"
+  },
+  "build": {
+    "appId": "com.loknet.browser",
+    "productName": "LokNet",
+    "directories": {
+      "output": "release/${version}"
+    },
+    "files": [
+      "dist-electron/**/*",
+      "dist/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "public/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    }
   },
   "keywords": [
     "browser",

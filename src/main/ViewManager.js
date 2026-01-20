@@ -281,6 +281,21 @@ export class ViewManager {
             if (this.activeView)
                 this.window.addBrowserView(this.activeView);
         });
+        // DevTools Control
+        ipcMain.on('devtools:toggle', () => {
+            if (this.activeView) {
+                const webContents = this.activeView.webContents;
+                if (webContents.isDevToolsOpened()) {
+                    webContents.closeDevTools();
+                }
+                else {
+                    // Small delay to ensure clean state if it was just closed or focused
+                    setTimeout(() => {
+                        webContents.openDevTools({ mode: 'right', activate: true });
+                    }, 100);
+                }
+            }
+        });
     }
     get activeView() {
         return this.activeViewId ? this.views.get(this.activeViewId) : null;
@@ -328,6 +343,22 @@ export class ViewManager {
             }
         });
         view.webContents.on('page-favicon-updated', (_, favicons) => updateFavicon(favicons));
+        // DevTools Shortcut Handling
+        view.webContents.on('before-input-event', (event, input) => {
+            if (input.type === 'keyDown') {
+                // Ctrl+Shift+I or F12
+                if ((input.control && input.shift && input.key.toLowerCase() === 'i') || input.key === 'F12') {
+                    const wc = view.webContents;
+                    // Force close first to ensure mode change is applied if it was previously detached
+                    if (wc.isDevToolsOpened()) {
+                        wc.closeDevTools();
+                    }
+                    // strictly open in 'right' mode (docked)
+                    wc.openDevTools({ mode: 'right', activate: true });
+                    event.preventDefault();
+                }
+            }
+        });
         view.webContents.loadURL(targetUrl);
         const id = this.nextId++;
         this.views.set(id, view);

@@ -56,6 +56,19 @@ function App() {
             setPermissionRequest(data);
             window.api.hideView();
         });
+
+        // Global Key Handler for DevTools (when focus is on Renderer)
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'i') || e.key === 'F12') {
+                e.preventDefault();
+                window.api.toggleDevTools();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
     }, []);
 
     const handleNewTab = async () => {

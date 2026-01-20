@@ -29,4 +29,6 @@ contextBridge.exposeInMainWorld('api', {
     sendPermissionResponse: (data) => ipcRenderer.send('permission:response', data),
     getSitePermissions: (host) => ipcRenderer.invoke('permissions:get-for-host', host),
     resetSitePermissions: (host) => ipcRenderer.invoke('permissions:reset', host),
+    // DevTools
+    toggleDevTools: () => ipcRenderer.send('devtools:toggle'),
 });
